@@ -2,10 +2,11 @@
   "author": "Chris Franson",
   "developer": {
     "name": "Chris Franson",
-    "url": "http://zara2stra.com"
+    "url": "https://zara2stra.com"
   },
   "applications": {
     "gecko": {
+      "id": "tab-finder@zara2stra.com",
       "strict_min_version": "57.0"
     }
   },
@@ -28,7 +29,8 @@
   "manifest_version": 2,
   "name": "Tab Finder",
   "permissions": [
-    "tabs"
+    "tabs",
+    "storage"
   ],
   "commands": {
     "_execute_browser_action": {
@@ -38,5 +40,9 @@
         }
     }
   },
-  "version": "1.0.3"
+  "options_ui": {
+    "page": "options.html",
+    "browser_style": true
+  },
+  "version": "1.1.0"
 }

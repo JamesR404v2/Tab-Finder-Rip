@@ -1,0 +1,173 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	color: #333;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.container {
+	max-width: 600px;
+	margin: 40px auto 0 auto;
+	padding: 30px;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.setting-group {
+	margin-bottom: 25px;
+}
+
+.setting-group:last-of-type {
+	margin-bottom: 0;
+}
+
+.setting-group label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: 600;
+	font-size: 1.1rem;
+	color: #333;
+}
+
+.setting-group label input[type="checkbox"] {
+	margin-right: 8px;
+}
+
+.setting-group select,
+.setting-group input[type="number"] {
+	padding: 8px 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	background-color: #fff;
+	font-size: 1.0rem;
+	color: #333;
+	min-width: 200px;
+}
+
+.setting-group select:focus,
+.setting-group input[type="number"]:focus {
+	outline: none;
+	border-color: #0060df;
+	box-shadow: 0 0 0 3px rgba(0, 96, 223, 0.1);
+}
+
+.input-group {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.unit {
+	font-size: 1.0rem;
+	color: #666;
+}
+
+.description {
+	margin: 6px 0 0 0;
+	font-size: 1.0rem;
+	color: #666;
+	line-height: 1.5;
+}
+
+.status-message {
+	margin-top: 0;
+	padding: 0 15px;
+	border-radius: 4px;
+	font-size: 1.0rem;
+	opacity: 0;
+	transition: opacity 0.3s, padding 0.3s, margin-top 0.3s;
+}
+
+.status-message.show {
+	margin-top: 20px;
+	padding: 10px 15px;
+	opacity: 1;
+}
+
+.status-message.success {
+	background-color: #d4edda;
+	color: #155724;
+	border: 1px solid #c3e6cb;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+	html,
+	.theme-auto {
+		background-color: #2b2a33 !important;
+		color: #cfcfd1;
+	}
+
+	.theme-auto .container {
+		background-color: #38383d;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	}
+
+	.theme-auto h1 {
+		color: #f9f9fa;
+	}
+
+	.theme-auto .setting-group label {
+		color: #f9f9fa;
+	}
+
+	.theme-auto .setting-group select,
+	.theme-auto .setting-group input[type="number"] {
+		background-color: #2b2a33;
+		color: #f9f9fa;
+		border-color: #4a4a4f;
+	}
+
+	.theme-auto .description {
+		color: #b1b1b3;
+	}
+
+	.theme-auto .unit {
+		color: #b1b1b3;
+	}
+
+	.theme-auto .status-message.success {
+		background-color: #1a472a;
+		color: #7ed99a;
+		border-color: #2d5a3d;
+	}
+}
+
+/* Explicit dark theme */
+.theme-dark {
+	color: #cfcfd1;
+}
+
+.theme-dark .container {
+	background-color: #38383d;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.theme-dark h1 {
+	color: #f9f9fa;
+}
+
+.theme-dark .setting-group label {
+	color: #f9f9fa;
+}
+
+.theme-dark .setting-group select,
+.theme-dark .setting-group input[type="number"] {
+	background-color: #2b2a33;
+	color: #f9f9fa;
+	border-color: #4a4a4f;
+}
+
+.theme-dark .description {
+	color: #b1b1b3;
+}
+
+.theme-dark .unit {
+	color: #b1b1b3;
+}
+
+.theme-dark .status-message.success {
+	background-color: #1a472a;
+	color: #7ed99a;
+	border-color: #2d5a3d;
+}

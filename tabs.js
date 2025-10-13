@@ -25,10 +25,42 @@ function init() {
       if (counter <= limit) {
         let tabLink = document.createElement('a');
 
-        tabLink.textContent = tab.title || tab.id;
+        // Create favicon
+        if (tab.favIconUrl) {
+          let favicon = document.createElement('img');
+          favicon.classList.add('tab-favicon');
+          favicon.src = tab.favIconUrl;
+          favicon.setAttribute('alt', '');
+          tabLink.appendChild(favicon);
+        }
+
+        // Create tab title span
+        let tabTitle = document.createElement('span');
+        tabTitle.classList.add('tab-title');
+        tabTitle.textContent = tab.title || tab.id;
+        tabLink.appendChild(tabTitle);
+
+        // Create audio icon if tab is playing audio
+        if (tab.audible) {
+          let audioIcon = document.createElement('span');
+          audioIcon.classList.add('audio-icon');
+          audioIcon.textContent = '🔊';
+          audioIcon.setAttribute('title', 'Playing audio');
+          tabLink.appendChild(audioIcon);
+        }
+
+        // Create close button
+        let closeBtn = document.createElement('span');
+        closeBtn.classList.add('close-tab');
+        closeBtn.textContent = '×';
+        closeBtn.setAttribute('title', 'Close tab');
+        closeBtn.dataset.tab_id = tab.id;
+        tabLink.appendChild(closeBtn);
+
         tabLink.setAttribute('href', tab.id);
         tabLink.classList.add('tab-link', 'shown');
         tabLink.dataset.tab_url = tab.url;
+        tabLink.dataset.audible = tab.audible ? 'true' : 'false';
         currentTabs.appendChild(tabLink);
       }
 
@@ -85,9 +117,17 @@ function initFilter() {
 
       // Filter the tabs
       default:
+        var filterValue = tabFilter.value.toLowerCase();
+        var isAudioSearch = filterValue === 'sound' || filterValue === 'audio';
+
         for (var i=0; i<tabCount; i++) {
           var tabLink = tabLinks[i];
-          if (matcher.test(tabLink.innerHTML) || matcher.test(tabLink.dataset.tab_url)) {
+          var tabTitle = tabLink.querySelector('.tab-title');
+          var titleText = tabTitle ? tabTitle.textContent : tabLink.textContent;
+          var isAudible = tabLink.dataset.audible === 'true';
+
+          // Match if: title/URL matches OR (searching for audio/sound AND tab is audible)
+          if (matcher.test(titleText) || matcher.test(tabLink.dataset.tab_url) || (isAudioSearch && isAudible)) {
             tabLink.classList.add("shown");
             tabLink.classList.remove("hidden");
           }
@@ -174,13 +214,35 @@ function getAllTabs() {
 }
 
 /*
- * Activate the selected tab and its parent window
+ * Handle close button clicks and tab activation
  */
 document.addEventListener("click", (e) => {
 
-  if (e.target.classList.contains('tab-link')) {
+  // Handle close button clicks
+  if (e.target.classList.contains('close-tab')) {
+    e.stopPropagation();
+    var tabId = +e.target.dataset.tab_id;
 
-    var tabId = +e.target.getAttribute('href');
+    // Close the tab
+    browser.tabs.remove(tabId).then(() => {
+      // Remove the tab link from the DOM
+      e.target.parentElement.remove();
+      // Reset the selected tab link
+      if (document.getElementsByClassName("tab-link shown").length > 0) {
+        resetSelectedTabLink();
+      }
+    });
+
+    e.preventDefault();
+    return;
+  }
+
+  // Handle tab link clicks (activate tab)
+  if (e.target.classList.contains('tab-link') || e.target.classList.contains('tab-title') || e.target.classList.contains('audio-icon') || e.target.classList.contains('tab-favicon')) {
+
+    // Get the tab link element
+    var tabLink = e.target.classList.contains('tab-link') ? e.target : e.target.closest('.tab-link');
+    var tabId = +tabLink.getAttribute('href');
 
     getAllTabs().then((tabs) => {
       for (var tab of tabs) {
@@ -201,5 +263,105 @@ document.addEventListener("click", (e) => {
   e.preventDefault();
 });
 
+/*
+ * Load and apply settings from storage
+ */
+function loadSettings() {
+  return browser.storage.local.get(['theme', 'width', 'height', 'fontSize', 'showFavicon']).then((result) => {
+    console.log('Settings loaded:', result);
+    const theme = result.theme || 'auto';
+    const width = result.width || 800;
+    const height = result.height || 600;
+    const fontSize = result.fontSize || 1.0;
+    const showFavicon = result.showFavicon !== undefined ? result.showFavicon : true;
+
+    console.log('Applying theme:', theme, 'width:', width, 'height:', height, 'fontSize:', fontSize, 'showFavicon:', showFavicon);
+
+    // Apply theme
+    applyTheme(theme);
+
+    // Apply width
+    applyWidth(width);
+
+    // Apply height
+    applyHeight(height);
+
+    // Apply font size
+    applyFontSize(fontSize);
+
+    // Apply favicon visibility
+    applyFaviconVisibility(showFavicon);
+  }).catch((error) => {
+    console.error('Error loading settings:', error);
+    // Apply defaults on error
+    applyTheme('auto');
+    applyWidth(800);
+    applyHeight(600);
+    applyFontSize(1.0);
+    applyFaviconVisibility(true);
+  });
+}
+
+function applyTheme(theme) {
+  const body = document.body;
+
+  // Remove existing theme classes
+  body.classList.remove('theme-light', 'theme-dark', 'theme-auto');
+
+  // Add new theme class
+  body.classList.add('theme-' + theme);
+}
+
+function applyWidth(width) {
+  document.documentElement.style.setProperty('width', width + 'px', 'important');
+  document.body.style.setProperty('width', width + 'px', 'important');
+}
+
+function applyHeight(height) {
+  document.documentElement.style.setProperty('height', height + 'px', 'important');
+  document.body.style.setProperty('height', height + 'px', 'important');
+}
+
+function applyFontSize(fontSize) {
+  // Convert rem to pixels (1rem = 16px by default)
+  const fontSizeInPixels = fontSize * 16;
+  document.documentElement.style.setProperty('font-size', fontSizeInPixels + 'px', 'important');
+}
+
+function applyFaviconVisibility(showFavicon) {
+  const body = document.body;
+  if (showFavicon) {
+    body.classList.remove('hide-favicons');
+  } else {
+    body.classList.add('hide-favicons');
+  }
+}
+
+// Listen for storage changes to update settings in real-time
+browser.storage.onChanged.addListener((changes, area) => {
+  if (area === 'local') {
+    if (changes.theme) {
+      applyTheme(changes.theme.newValue);
+    }
+    if (changes.width) {
+      applyWidth(changes.width.newValue);
+    }
+    if (changes.height) {
+      applyHeight(changes.height.newValue);
+    }
+    if (changes.fontSize) {
+      applyFontSize(changes.fontSize.newValue);
+    }
+    if (changes.showFavicon) {
+      applyFaviconVisibility(changes.showFavicon.newValue);
+    }
+  }
+});
+
 // Let's do this!
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener("DOMContentLoaded", () => {
+  // Load settings first, then initialize
+  loadSettings().then(() => {
+    init();
+  });
+});

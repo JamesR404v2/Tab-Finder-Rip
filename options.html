@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html class="theme-auto">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="options.css"/>
+    <title>Tab Finder Settings</title>
+  </head>
+
+<body class="theme-auto">
+  <div class="container">
+    <div class="setting-group">
+      <label for="theme-select">Theme</label>
+      <select id="theme-select">
+        <option value="auto">Auto (follow system)</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+      <p class="description">Choose the color theme for the extension popup.</p>
+    </div>
+
+    <div class="setting-group">
+      <label for="width-input">Popup Width</label>
+      <div class="input-group">
+        <input type="number" id="width-input" min="400" max="1200" step="50" value="800" />
+        <span class="unit">px</span>
+      </div>
+      <p class="description">Set the width of the popup window (400-1200px).</p>
+    </div>
+
+    <div class="setting-group">
+      <label for="height-input">Popup Height</label>
+      <div class="input-group">
+        <input type="number" id="height-input" min="300" max="800" step="50" value="600" />
+        <span class="unit">px</span>
+      </div>
+      <p class="description">Set the height of the popup window (300-800px).</p>
+    </div>
+
+    <div class="setting-group">
+      <label for="font-size-input">Font Size</label>
+      <div class="input-group">
+        <input type="number" id="font-size-input" min="0.7" max="2.0" step="0.1" value="1.0" />
+        <span class="unit">rem</span>
+      </div>
+      <p class="description">Set the font size for the popup (0.7-2.0rem).</p>
+    </div>
+
+    <div class="setting-group">
+      <label>
+        <input type="checkbox" id="show-favicon-checkbox" checked />
+        Show Favicons
+      </label>
+      <p class="description">Display website icons next to tab titles.</p>
+    </div>
+
+    <div class="status-message" id="status"></div>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>
