@@ -4,10 +4,13 @@
     "name": "Chris Franson",
     "url": "https://zara2stra.com"
   },
-  "applications": {
+  "browser_specific_settings": {
     "gecko": {
-      "id": "tab-finder@zara2stra.com",
-      "strict_min_version": "57.0"
+      "id": "tab-finder-rip@jamesr404v2",
+      "strict_min_version": "80.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
     }
   },
   "background": {
@@ -18,7 +21,7 @@
   },
   "browser_action": {
     "browser_style": true,
-    "default_title": "Tab Finder",
+    "default_title": "Tab Finder Rip",
     "default_popup": "tabs.html",
     "default_icon": {
         "32": "find.svg"
@@ -27,7 +30,7 @@
   "description": "Find and switch to your tabs quickly.",
   "homepage_url": "https://github.com/chrisfranson/tab-finder",
   "manifest_version": 2,
-  "name": "Tab Finder",
+  "name": "Tab Finder Rip",
   "permissions": [
     "tabs",
     "storage"
